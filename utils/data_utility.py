@@ -4,7 +4,7 @@
 import torch
 
 from torchvision import datasets
-from utils.transforms_utility import *
+from eva_pytorch_wrapper.utils.transforms_utility import *
 
 
 def download_train_data(train_transforms, dataset_type):

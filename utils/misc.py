@@ -123,7 +123,7 @@ def load_optimizer(model, learning_rate, momentum, weight_decay):
 
 def run_epochs(train_loader, test_loader, device, model, optimizer, train_epochs, pct_start, 
                anneal_strategy, cycle_momentum, base_momentum, max_momentum, div_factor, final_div_factor):
-    from utils import train_utility, test_utility
+    from eva_pytorch_wrapper.utils import train_utility, test_utility
     from torch.optim.lr_scheduler import OneCycleLR
 
     criterion = nn.CrossEntropyLoss()
