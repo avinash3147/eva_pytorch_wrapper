@@ -86,7 +86,7 @@ optimizer = load_optimizer(
     model= model,
     learning_rate= config['learning_rate']['value'],
     momentum=config['momentum']['value'], # Change to 0.005
-    weight_decay=config['weight_decay']['value']
+    weight_decay=config['optimizer_weight_decay']['value']
 ) # load Optimizer
 
 train_accuracy, train_losses, test_accuracy, test_losses, LR = run_epochs(
