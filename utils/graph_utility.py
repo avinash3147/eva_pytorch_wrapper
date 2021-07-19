@@ -71,7 +71,7 @@ def plot_misclassified_images(wrong_predictions, classes, mean, std):
     
     mean = eval(mean)
     std = eval(std)
-    classes = eval(classes)
+    # classes = eval(classes)
 
     for i, (img, pred, correct) in enumerate(wrong_predictions[:20]):
         img, pred, target = img.cpu().numpy().astype(dtype=np.float32), pred.cpu(), correct.cpu()
