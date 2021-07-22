@@ -29,6 +29,7 @@ Contains all files used for submitting EVA6 Assignments
 ## References
 [Kuangliu's PyTorch on CIFAR repo](https://github.com/kuangliu/pytorch-cifar)</br>
 [GradCam with PyTorch](https://github.com/kazuto1011/grad-cam-pytorch)</br>
+[Tiny ImageNet](https://github.com/tjmoon0104/pytorch-tiny-imagenet)
 
 ## Contributors:
 1. Avinash Ravi

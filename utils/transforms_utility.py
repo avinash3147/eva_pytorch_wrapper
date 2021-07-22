@@ -70,3 +70,14 @@ class CIFAR10AlbumentationS9:
         test_transforms = A.Compose([A.Normalize(mean=mean, std=std, always_apply=True),
                                  ToTensorV2()])
         return lambda img:test_transforms(image=np.array(img))["image"]
+
+
+class DefaultTransforms:
+    """
+    Returns Default Transformations
+    """
+    @staticmethod
+    def default_transforms():
+        return transforms.Compose([
+            transforms.ToTensor()
+        ])

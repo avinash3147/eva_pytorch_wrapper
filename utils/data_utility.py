@@ -63,28 +63,35 @@ def load_test_data(test_data, **data_loader_args):
     )
     return test_data
 
-def get_train_transformations(data_augmentation_type, mean, std):
+
+def get_train_transformations(data_augmentation_type, mean=None, std=None, is_default_transforms=False):
     """Load Transformation Based on data augmentation type
 
     Args:
         data_augmentation_type ([String]): Class Names Present in transform utility file
         mean ([tuple]): Mean of the dataset
         std ([tuple]): Standard Deviation of the Dataset
-
+        is_default_transforms boolean: whether to apply albumentation or not
     Returns:
         [type]: [description]
     """
+    if is_default_transforms:
+        return eval(data_augmentation_type)().default_transforms()
     return eval(data_augmentation_type)().train_transform(mean, std)
 
-def get_test_transformations(data_augmentation_type, mean, std):
+
+def get_test_transformations(data_augmentation_type, mean=None, std=None, is_default_transforms=False):
     """Load Transformation Based on data augmentation type
 
     Args:
         data_augmentation_type ([String]): Class Names Present in transform utility file
         mean ([tuple]): Mean of the dataset
         std ([tuple]): Standard Deviation of the Dataset
+        is_default_transforms boolean: whether to apply albumentation or not
 
     Returns:
         [type]: [description]
     """
+    if is_default_transforms:
+        return eval(data_augmentation_type)().default_transforms()
     return eval(data_augmentation_type)().test_transform(mean, std)
