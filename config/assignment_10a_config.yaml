@@ -1,6 +1,6 @@
 data_augmentation:
   type: DefaultTransforms
-if is_default_transforms:
+is_default_transforms:
   value: True
 model:
   type: Resnet
