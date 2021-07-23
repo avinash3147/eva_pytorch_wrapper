@@ -1,8 +1,10 @@
 """
     Contains all Methods related to data
 """
-import torch
-
+import torch, os, csv
+from torch.utils.data import Dataset
+from PIL import Image
+import numpy as np
 from torchvision import datasets
 from eva_pytorch_wrapper.utils.transforms_utility import *
 
@@ -95,3 +97,86 @@ def get_test_transformations(data_augmentation_type, mean=None, std=None, is_def
     if is_default_transforms:
         return eval(data_augmentation_type)().default_transforms()
     return eval(data_augmentation_type)().test_transform(mean, std)
+
+
+def classes():
+    id_dict = {}
+    all_classes = {}
+    for i, line in enumerate(open('./data/tiny-imagenet-200/wnids.txt', 'r')):
+        id_dict[line.replace('\n', '')] = i
+
+    result = {}
+    class_id = {}
+    for i, line in enumerate(open('./data/tiny-imagenet-200/words.txt', 'r')):
+        n_id, word = line.split('\t')[:2]
+        all_classes[n_id] = word
+    for key, value in id_dict.items():
+        result[value] = (all_classes[key].replace('\n', '').split(",")[0])
+        class_id[key] = (value, all_classes[key])
+
+    return result, class_id
+
+def download():
+    import requests, zipfile
+    from io import BytesIO
+    from tqdm.notebook import tqdm
+
+    r = requests.get('http://cs231n.stanford.edu/tiny-imagenet-200.zip', stream=True)
+    print('Downloading TinyImageNet Data')
+    zip_ref = zipfile.ZipFile(BytesIO(r.content))
+    for file in tqdm(iterable=zip_ref.namelist(), total=len(zip_ref.namelist())):
+        zip_ref.extract(member=file, path='./data/')
+    zip_ref.close()
+
+
+class TinyImageNet(Dataset):
+    def __init__(self, train=True, transform=None, train_split=0.7):
+        self.image_paths = []
+        self.targets = []
+        self.transform = transform
+
+        download()
+        _, class_id = classes()
+
+        # train images
+        train_path = './data/tiny-imagenet-200/train'
+        for class_dir in os.listdir(train_path):
+            train_images_path = os.path.join(train_path, class_dir, 'images')
+            for image in os.listdir(train_images_path):
+                if image.endswith('.JPEG'):
+                    self.image_paths.append(os.path.join(train_images_path, image))
+                    self.targets.append(class_id[class_dir][0])
+        self.indices = np.arange(len(self.targets))
+
+        # val images
+        val_path = './data/tiny-imagenet-200/val'
+        val_images_path = os.path.join(val_path, 'images')
+        with open(os.path.join(val_path, 'val_annotations.txt')) as f:
+            for line in csv.reader(f, delimiter='\t'):
+                self.image_paths.append(os.path.join(val_images_path, line[0]))
+                self.targets.append(class_id[line[1]][0])
+
+        self.indices = np.arange(len(self.targets))
+
+        random_seed = 1
+        np.random.seed(random_seed)
+        np.random.shuffle(self.indices)
+
+        split_idx = int(len(self.indices) * train_split)
+        self.indices = self.indices[:split_idx] if train else self.indices[split_idx:]
+
+    def __getitem__(self, index):
+
+        image_index = self.indices[index]
+        filepath = self.image_paths[image_index]
+        img = Image.open(filepath)
+        img = img.convert("RGB")
+        target = self.targets[image_index]
+
+        if self.transform is not None:
+            img = self.transform(img)
+
+        return img, target
+
+    def __len__(self):
+        return len(self.indices)

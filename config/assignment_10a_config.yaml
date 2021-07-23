@@ -24,17 +24,3 @@ optimizer_weight_decay:
   value: 0.005
 learning_rate:
   value: 0.01
-pct_start:
-  value: 0.167
-anneal_strategy:
-  value: 'linear'
-cycle_momentum:
-  value: False
-base_momentum:
-  value: 0.85
-max_momentum:
-  value: 0.95
-div_factor:
-  value: 10.0
-final_div_factor:
-  value: 1
