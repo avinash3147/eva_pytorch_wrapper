@@ -121,21 +121,21 @@ def load_optimizer(model, learning_rate, momentum, weight_decay):
     return optimizer
 
 
-def run_epochs(train_loader, test_loader, device, model, optimizer, train_epochs, max_lr=None, is_one_cycle_lr=True, pct_start=None,
+def run_epochs(train_loader, test_loader, device, model, optimizer, train_epochs, max_lr, pct_start=None,
                anneal_strategy=None, cycle_momentum=None, base_momentum=None, max_momentum=None, div_factor=None, final_div_factor=None):
     from eva_pytorch_wrapper.utils import train_utility, test_utility
     from torch.optim.lr_scheduler import OneCycleLR
 
     criterion = nn.CrossEntropyLoss()
 
-    if is_one_cycle_lr:
-        LR = []
-        scheduler = OneCycleLR(optimizer, max_lr=0.012400000000000001, total_steps=None, epochs=train_epochs,
-                               steps_per_epoch=len(train_loader), pct_start=pct_start, anneal_strategy=anneal_strategy,
-                               cycle_momentum=cycle_momentum, base_momentum=base_momentum, max_momentum=max_momentum, div_factor=div_factor,
-                               final_div_factor=final_div_factor)
-    else:
-        scheduler = OneCycleLR(optimizer, max_lr=max_lr, epochs=train_epochs, steps_per_epoch=len(train_loader))
+    # if is_one_cycle_lr:
+    LR = []
+    scheduler = OneCycleLR(optimizer, max_lr=max_lr, total_steps=None, epochs=train_epochs,
+                           steps_per_epoch=len(train_loader), pct_start=pct_start, anneal_strategy=anneal_strategy,
+                           cycle_momentum=cycle_momentum, base_momentum=base_momentum, max_momentum=max_momentum, div_factor=div_factor,
+                           final_div_factor=final_div_factor)
+    # else:
+    #     scheduler = OneCycleLR(optimizer, max_lr=max_lr, epochs=train_epochs, steps_per_epoch=len(train_loader))
 
     train_losses = []
     test_losses = []
@@ -143,9 +143,8 @@ def run_epochs(train_loader, test_loader, device, model, optimizer, train_epochs
     test_accuracy = []
 
     for epoch in range(1, train_epochs + 1):
-        if is_one_cycle_lr:
-            print("EPOCH:", epoch, 'LR:', optimizer.param_groups[0]['lr'])
-            LR.append(optimizer.param_groups[0]['lr'])
+        print("EPOCH:", epoch, 'LR:', optimizer.param_groups[0]['lr'])
+        LR.append(optimizer.param_groups[0]['lr'])
 
         train_utility.train(
             model=model,
@@ -166,9 +165,7 @@ def run_epochs(train_loader, test_loader, device, model, optimizer, train_epochs
             test_losses=test_losses
         )
 
-    if is_one_cycle_lr:
-        return train_accuracy, train_losses, test_accuracy, test_losses, LR
-    return train_accuracy, train_losses, test_accuracy, test_losses
+    return train_accuracy, train_losses, test_accuracy, test_losses, LR
 
 
 def get_wrong_predictions(model, test_loader, device):

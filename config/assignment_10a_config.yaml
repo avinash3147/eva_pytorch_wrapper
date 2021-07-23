@@ -5,18 +5,36 @@ is_default_transforms:
 model:
   type: Resnet
 input_size:
-  value: (3, 32, 32)
+  value: (3, 64, 64)
 mean:
   value: (0.4914, 0.4822, 0.4465)
 std:
   value: (0.247, 0.243, 0.261)
-momentum:
-  value: 0.9
-optimizer_weight_decay:
-  value: 0.005
-learning_rate:
-  value: 0.01
 train_epochs:
   value: 50
 max_lr:
   value: 0.015
+lr_finder_epochs:
+  value: 10
+momentum:
+  value: 0.9
+weight_decay:
+  value: 0.05
+optimizer_weight_decay:
+  value: 0.005
+learning_rate:
+  value: 0.01
+pct_start:
+  value: 0.167
+anneal_strategy:
+  value: 'linear'
+cycle_momentum:
+  value: False
+base_momentum:
+  value: 0.85
+max_momentum:
+  value: 0.95
+div_factor:
+  value: 10.0
+final_div_factor:
+  value: 1
